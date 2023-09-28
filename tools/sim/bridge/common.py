@@ -31,8 +31,6 @@ class SimulatorBridge(ABC):
     set_params_enabled()
     self.params = Params()
 
-    self.rk = Ratekeeper(100, None)
-
     self.dual_camera = arguments.dual_camera
     self.high_quality = arguments.high_quality
 
@@ -99,6 +97,8 @@ Ignition: {self.simulator_state.ignition} Engaged: {self.simulator_state.is_enga
     # Simulation tends to be slow in the initial steps. This prevents lagging later
     for _ in range(20):
       self.world.tick()
+
+    self.rk = Ratekeeper(100)
 
     while self._keep_alive:
       throttle_out = steer_out = brake_out = 0.0

@@ -37,10 +37,9 @@ def apply_metadrive_patches():
 
 
 class MetaDriveWorld(World):
-  def __init__(self, env, ticks_per_frame: float, dual_camera = False):
+  def __init__(self, env, dual_camera = False):
     super().__init__(dual_camera)
     self.env = env
-    self.ticks_per_frame = ticks_per_frame
     self.dual_camera = dual_camera
 
     self.steer_ratio = 15
@@ -116,7 +115,7 @@ def curve_block(length, angle=45, direction=0):
 
 
 class MetaDriveBridge(SimulatorBridge):
-  TICKS_PER_FRAME = 2
+  TICKS_PER_FRAME = 5
 
   def __init__(self, args):
     self.should_render = False
@@ -189,10 +188,12 @@ class MetaDriveBridge(SimulatorBridge):
               straight_block(120),
               curve_block(120, 90),
             ]
-          )
+          ),
+          decision_repeat=1,
+          physics_world_step_size=self.TICKS_PER_FRAME / 100
         )
       )
 
     env.reset()
 
-    return MetaDriveWorld(env, self.TICKS_PER_FRAME)
+    return MetaDriveWorld(env)
